@@ -1,0 +1,22 @@
+
+drop trigger if exists delete_items;
+DELIMITER //
+CREATE TRIGGER delete_items 
+	AFTER DELETE ON game_character
+	FOR EACH ROW 
+		BEGIN
+			DELETE FROM item WHERE item.char_id = game_character.id;
+			DELETE FROM weapon WHERE weapon.char_id = game_character.id;
+			DELETE FROM armor WHERE armor.char_id = game_character.id;
+		END//
+DELIMITER ;
+
+drop trigger if exists remove_character;
+DELIMITER //
+CREATE TRIGGER remove_character 
+	AFTER DELETE ON game_character
+	FOR EACH ROW 
+		BEGIN
+			DELETE FROM char_party WHERE char_party.char_id = game_character.id;
+		END//
+DELIMITER ;
