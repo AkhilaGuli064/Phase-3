@@ -1,0 +1,817 @@
+*************
+* Team Info *
+*************
+
+	Tyler Veseth
+	Team with one member
+	Responsible for all tables
+
+	
+	
+	
+********************************
+* Generate and Populate Tables *
+********************************
+
+
+CREATE TABLE IF NOT EXISTS organization (
+id int 						NOT NULL, 
+org_name varchar(20) 		NOT NULL, 
+description varchar(60), 	
+PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS location (
+org_id int 					NOT NULL, 
+location varchar(20), 
+PRIMARY KEY(org_id, location),
+FOREIGN KEY(org_id) REFERENCES organization(id)
+);
+
+CREATE TABLE IF NOT EXISTS association (
+	org_id int				NOT NULL,
+	party_id int			NOT NULL,
+	relation int			NOT NULL,
+PRIMARY KEY(org_id, party_id),
+FOREIGN KEY(org_id) REFERENCES organization(id),
+FOREIGN KEY(party_id) REFERENCES party(id)
+);
+
+CREATE TABLE IF NOT EXISTS party (
+	id int					NOT NULL,
+	party_name varchar(20)	NOT NULL,
+	color char(6),
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS char_party (
+	char_id int				NOT NULL,
+	party_id int			NOT NULL,
+PRIMARY KEY(char_id, party_id),
+FOREIGN KEY(char_id) REFERENCES game_character(id),
+FOREIGN KEY(party_id) REFERENCES party(id)
+);
+
+CREATE TABLE IF NOT EXISTS game_character (
+	id int					NOT NULL,
+	char_name varchar(20)	NOT NULL,
+	description varchar(60),
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS char_spell (
+	char_id int				NOT NULL,
+	spell_id int			NOT NULL,
+PRIMARY KEY(char_id, spell_id),
+FOREIGN KEY(char_id) REFERENCES game_character(id),
+FOREIGN KEY(spell_id) REFERENCES spell(id)
+);
+
+CREATE TABLE IF NOT EXISTS spell (
+	id int					NOT NULL,
+	spell_name varchar(20)	NOT NULL,
+	description varchar(60),
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS item (
+	char_id int				NOT NULL,
+	num int		 			NOT NULL,
+	item_name varchar(20)	NOT NULL,
+	weight int,
+	description varchar(60),
+	PRIMARY KEY(char_id, num),
+	FOREIGN KEY(char_id) REFERENCES game_character(id)
+);
+
+CREATE TABLE IF NOT EXISTS weapon (
+	char_id int				NOT NULL,
+	num int					NOT NULL,
+	damage_type varchar(12)	NOT NULL,
+	damage int				NOT NULL,
+	PRIMARY KEY(char_id, num),
+	FOREIGN KEY(char_id) REFERENCES item(char_id),
+	FOREIGN KEY(num) REFERENCES item(num)
+);
+
+CREATE TABLE IF NOT EXISTS armor (
+	char_id int				NOT NULL,
+	num int					NOT NULL,
+	class int				NOT NULL,
+	PRIMARY KEY(char_id, num),
+	FOREIGN KEY(char_id) REFERENCES item(char_id),
+	FOREIGN KEY(num) REFERENCES item(num)
+);
+
+
+
+
+
+
+INSERT INTO game_character(char_name, id, description) VALUES
+	('Besma', 1, 'female human'),
+	('Kenneth', 2, 'male human'),
+	('Gudris', 3, 'female elf'),
+	('Arnor', 4, 'male half-elf'),
+	('Sergei', 5, 'male dwarf'),
+	('Duvamil', 6, 'female half-orc'),
+	('Tosti', 7, 'female halfling'),
+	('Asfrid', 8, 'female half-elf'),
+	('Kalf', 9, 'male elf'),
+	('Gunnlum', 10, 'male elf'),
+	('Boled', 11, 'male dwarf'),
+	('Hallfred', 12, 'male halfling');
+	
+INSERT INTO item(char_id, num, item_name, weight, description) VALUES
+	(1, 1, 'Padded Armor', 10, 'light, stealth disadvantage'),
+	(2, 1, 'Leather Armor', 15, 'light'),
+	(3, 1, 'Padded Armor', 10, 'light, stealth disadvantage'),
+	(4, 1, 'Half-plate Armor', 50, 'medium, stealth disadvantage'),
+	(6, 1, 'Scale mail Armor', 30, 'medium, stealth disadvantage'),
+	(6, 2, 'Shield', 6, 'light steel'),
+	(7, 1, 'Banded mail Armor', 35, 'medium'),
+	(10, 1, 'Leather Armor', 15, 'light'),
+	(11, 1, 'Chainmail Armor', 40, 'heavy, stealth disadvantage, Str 13'),
+	(12, 1, 'Hide Armor', 25, 'medium'),
+	
+	(1, 2, 'Club', 2, 'light'),
+	(2, 2, 'Dagger', 1, 'finesse, light, thrown'),
+	(4, 2, 'Greatclub', 10, 'two-handed'),
+	(6, 3, 'Shortsword', 2, 'finesse, light'),
+	(8, 2, 'Sickle', 2, 'light'),
+	(9, 2, 'Handaxe', 2, 'light, thrown'),
+	(9, 3, 'Whip', 3, 'finesse, reach'),
+	(11, 2, 'Halberd', 6, 'heavy, reach, two-handed'),
+	(12, 2, 'Greatsword', 6, 'heavy, two-handed'),
+	
+	(1, 3, 'Health Potion', 1, 'heals 5 damage'),
+	(8, 3, 'Wooden Staff', 2, 'wooden staff used for walking'),
+	(9, 4, 'Ruby Medalion', 1, 'decorative medalion worth 50 gold'),
+	(11, 3, 'Health Potion', 1, 'heals 5 damage');
+
+INSERT INTO armor(char_id, num, class) VALUES
+	(1, 1, 11),
+	(2, 1, 11),
+	(3, 1, 11),
+	(4, 1, 15),
+	(6, 1, 14),
+	(6, 2, 2),
+	(7, 1, 13),
+	(10, 1, 11),
+	(11, 1, 16),
+	(12, 1, 12);
+	
+INSERT INTO weapon(char_id, num, damage, damage_type) VALUES
+	(1, 2, 4, 'bludgeoning'),
+	(2, 2, 4, 'piercing'),
+	(4, 2, 8, 'bludgeoning'),
+	(5, 2, 4, 'bludgeoning'),
+	(6, 3, 6, 'piercing'),
+	(8, 2, 4, 'slashing'),
+	(9, 2, 6, 'slashing'),
+	(9, 3, 4, 'slashing'),
+	(11, 2, 10, 'slashing'),
+	(12, 2, 12, 'slashing');
+	
+INSERT INTO spell(id, spell_name, description) VALUES
+	(1, 'Fire Bolt', '120 feet, 10 damage'),
+	(2, 'Lightning', '100 feet, 48 damage'),
+	(3, 'Control Water', 'Concentration, 10 minutes'),
+	(4, 'Healing Word', '60 feet, 4 healing'),
+	(5, 'Invisibility', 'Conventration, 1 hour'),
+	(6, 'Wish', 'Instantanious, no range');
+	
+INSERT INTO char_spell(char_id, spell_id) VALUES
+	(1, 1),
+	(1, 2),
+	(2, 3),
+	(2, 5),
+	(3, 1),
+	(3, 3),
+	(4, 3),
+	(4, 4),
+	(4, 5),
+	(5, 2),
+	(5, 3),
+	(8, 1),
+	(8, 2),
+	(8, 3),
+	(8, 4),
+	(8, 5),
+	(10, 4),
+	(10, 5),
+	(12, 1),
+	(12, 3);
+	
+INSERT INTO party(id, party_name, color) VALUES
+	(1, 'Players', '00ff00'),
+	(2, 'Bandits', 'ff0000'),
+	(3, 'Guards', '0000ff');
+
+INSERT INTO char_party(party_id, char_id) VALUES
+	(1, 1),
+	(1, 2),
+	(1, 3),
+	(1, 4),
+	(2, 5),
+	(2, 6),
+	(2, 7),
+	(1, 8),
+	(3, 9),
+	(3, 10),
+	(3, 11),
+	(3, 12);
+	
+INSERT INTO organization(id, org_name, description) VALUES
+	(1, 'Westburrow Theives', 'The band of thieves living in Wetburrow Hollow'),
+	(2, 'Riverton Guards', 'The local authorities from Riverton'),
+	(3, 'Riverton Miners', 'The workers of the Riverton mining camp');
+	
+INSERT INTO location(org_id, location) VALUES
+	(1, 'Westburrow Hollow'),
+	(2, 'Riverton'),
+	(2, 'Riverton Mines'),
+	(3, 'Riverton'),
+	(3, 'Riverton Mines');
+
+INSERT INTO association(party_id, org_id, relation) VALUES
+	(1, 1, -3),
+	(1, 2, 7),
+	(1, 3, 1),
+	(2, 1, 9),
+	(2, 2, -8),
+	(2, 3, -3),
+	(3, 1, -10),
+	(3, 2, 10),
+	(3, 3, -1);
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+***************
+* SQL Queries *
+***************
+
+	1-2. Queries that show that constraints are enforced.
+		a) There is already a character with the id 1.
+	
+			INPUT:
+	
+INSERT INTO game_character(char_name, id, description) VALUES
+	('name', 1, 'male half-elf');
+	
+			OUTPUT:
+	
+#1062 - Duplicate entry '1' for key 'PRIMARY'
+
+	
+		
+		
+		b) 	There is no character with the id 25.
+	
+			INPUT:
+	
+INSERT INTO char_spell(char_id, spell_id) VALUES
+	(25, 1);
+	
+			OUTPUT: SQL accepted this for some reason and I am not sure why.
+
+			
+			
+	
+	
+	
+	3-6. All types of join expressions
+		a)INNER - list all characters with items and the items they have
+		
+			INPUT
+		
+SELECT game_character.char_name, item.item_name FROM game_character INNER JOIN item ON game_character.id = item.char_id;
+
+			OUTPUT:
+			
+char_name	item_name	
+Besma	Padded Armor	
+Besma	Club	
+Besma	Health Potion	
+Kenneth	Leather Armor	
+Kenneth	Dagger	
+Gudris	Padded Armor	
+Arnor	Half-plate Armor	
+Arnor	Greatclub	
+Duvamil	Scale mail Armor	
+Duvamil	Shield	
+Duvamil	Shortsword	
+Tosti	Banded mail Armor	
+Asfrid	Sickle	
+Asfrid	Wooden Staff	
+Kalf	Handaxe	
+Kalf	Whip	
+Kalf	Ruby Medalion	
+Gunnlum	Leather Armor	
+Boled	Chainmail Armor	
+Boled	Halberd	
+Boled	Health Potion	
+Hallfred	Hide Armor	
+Hallfred	Greatsword	
+
+		
+	
+
+		b)OUTER - list of all characters and spells known as an outer join
+		
+			INPUT:
+
+SELECT game_character.char_name, char_spell.spell_id FROM
+	game_character FULL OUTER JOIN char_spell ON game_character.id = char_spell.char_id;
+
+			
+			OUTPUT: Error: FULL OUTER JOIN not supported in 
+		
+		
+		
+		
+		
+		c)LEFT OUTER - list of all characters and spells known as a left outer join
+		
+			INPUT:
+
+SELECT game_character.char_name, spell.spell_name FROM
+	game_character LEFT JOIN char_spell ON game_character.id = char_spell.char_id LEFT JOIN spell ON char_spell.spell_id = spell.id;
+			
+			OUTPUT:
+		
+char_name	spell_name	
+Besma	Fire Bolt	
+Besma	Lightning	
+Kenneth	Control Water	
+Kenneth	Invisibility	
+Gudris	Fire Bolt	
+Gudris	Lightning	
+Gudris	Control Water	
+Arnor	Control Water	
+Arnor	Healing Word	
+Arnor	Invisibility	
+Sergei	Lightning	
+Sergei	Control Water	
+Todd		
+Tosti		
+Asfrid	Fire Bolt	
+Asfrid	Lightning	
+Asfrid	Control Water	
+Asfrid	Healing Word	
+Asfrid	Invisibility	
+Kalf		
+Gunnlum	Healing Word	
+Gunnlum	Invisibility	
+Boled		
+Hallfred	Fire Bolt	
+Hallfred	Lightning	
+		
+		
+		
+		
+		d)RIGHT OUTER - list of all characters and spells known as a right outer join
+		
+			INPUT:
+			
+SELECT game_character.char_name, spell.spell_name FROM
+	game_character RIGHT JOIN char_spell ON game_character.id = char_spell.char_id RIGHT JOIN spell ON char_spell.spell_id = spell.id;
+			
+			OUTPUT:
+		
+char_name	spell_name	
+Besma	Fire Bolt	
+Gudris	Fire Bolt	
+Asfrid	Fire Bolt	
+Hallfred	Fire Bolt	
+Besma	Lightning	
+Gudris	Lightning	
+Sergei	Lightning	
+Asfrid	Lightning	
+Hallfred	Lightning	
+Kenneth	Control Water	
+Gudris	Control Water	
+Arnor	Control Water	
+Sergei	Control Water	
+Asfrid	Control Water	
+Arnor	Healing Word	
+Asfrid	Healing Word	
+Gunnlum	Healing Word	
+Kenneth	Invisibility	
+Arnor	Invisibility	
+Asfrid	Invisibility	
+Gunnlum	Invisibility	
+		Wish	
+	
+	
+	
+	
+	
+	
+	7. Renaming - rename some of the characters
+	
+		INPUT:
+		
+UPDATE game_character SET char_name = 'Henry'
+	WHERE id = 6;
+	
+	
+	
+	
+	
+	
+	8. String operations - print names longer than 5 characters
+		
+		INPUT:
+		
+SELECT char_name FROM game_character WHERE LENGTH(char_name) > 5;
+	
+		OUTPUT:
+		
+char_name	
+Kenneth	
+Gudris	
+Sergei	
+Asfrid	
+Gunnlum	
+Hallfred	
+	
+	
+	
+	
+	
+	
+	9. Group by AND aggregation - list each character and their total number of spells
+
+		INPUT:
+		
+SELECT game_character.char_name, COUNT(spell.id) AS spell_count FROM
+	game_character LEFT JOIN char_spell ON game_character.id = char_spell.char_id LEFT JOIN spell ON char_spell.spell_id = spell.id GROUP BY game_character.id;
+	
+		OUTPUT:
+		
+char_name	spell_count	
+Besma	2	
+Kenneth	2	
+Gudris	3	
+Arnor	3	
+Sergei	2	
+Todd	0	
+Tosti	0	
+Asfrid	5	
+Kalf	0	
+Gunnlum	2	
+Boled	0	
+Hallfred	2	
+
+
+
+
+
+	
+	10. having - list characters with three or more spells
+	
+		INPUT:
+		
+SELECT game_character.char_name, COUNT(spell.id) AS spell_count FROM
+	game_character LEFT JOIN char_spell ON game_character.id = char_spell.char_id LEFT JOIN spell ON char_spell.spell_id = spell.id 
+	GROUP BY game_character.id
+	HAVING COUNT(spell.id) > 2;
+	
+		OUTPUT:
+		
+char_name	spell_count	
+Gudris	3	
+Arnor	3	
+Asfrid	5	
+
+	
+	
+	
+	
+	
+	11. order by - order the characters by name
+	
+		INPUT:
+		
+SELECT id, char_name FROM game_character ORDER BY char_name;
+	
+		OUTPUT;
+		
+id	char_name   	
+4	Arnor	
+8	Asfrid	
+1	Besma	
+11	Boled	
+3	Gudris	
+10	Gunnlum	
+12	Hallfred	
+9	Kalf	
+2	Kenneth	
+5	Sergei	
+6	Todd	
+7	Tosti	
+
+
+
+	
+	
+	
+	12. set union - list characters with the spell of id 1 or 2
+	
+		INPUT:
+		
+SELECT game_character.char_name, spell.spell_name FROM 
+	game_character JOIN char_spell ON game_character.id = char_spell.char_id JOIN spell ON char_spell.spell_id = spell.id WHERE
+	spell.id = 1
+UNION
+SELECT game_character.char_name, spell.spell_name FROM 
+	game_character JOIN char_spell ON game_character.id = char_spell.char_id JOIN spell ON char_spell.spell_id = spell.id WHERE
+	spell.id = 2;
+
+		OUTPUT:
+		
+char_name	spell_name	
+Besma	Fire Bolt	
+Gudris	Fire Bolt	
+Asfrid	Fire Bolt	
+Hallfred	Fire Bolt	
+Besma	Lightning	
+Gudris	Lightning	
+Sergei	Lightning	
+Asfrid	Lightning	
+Hallfred	Lightning	
+
+	
+	
+	
+	
+	
+	13. intersection - list characters with the spell of id 1 and 2
+	
+		INPUT:
+	
+SELECT game_character.char_name, spell.spell_name FROM 
+	game_character JOIN char_spell ON game_character.id = char_spell.char_id JOIN spell ON char_spell.spell_id = spell.id WHERE
+	spell.id = 1
+INTERSECT
+SELECT game_character.char_name, spell.spell_name FROM 
+	game_character JOIN char_spell ON game_character.id = char_spell.char_id JOIN spell ON char_spell.spell_id = spell.id WHERE
+	spell.id = 2;
+	
+		OUTPUT: Error, mysql doesn't support INTERSECT
+	
+	
+	
+	
+	
+	
+	14. minus - list of characters with spell of id 1 but not spell of id 2
+	
+		INPUT:
+		
+SELECT game_character.char_name, spell.spell_name FROM 
+	game_character JOIN char_spell ON game_character.id = char_spell.char_id JOIN spell ON char_spell.spell_id = spell.id WHERE
+	spell.id = 1
+MINUS
+SELECT game_character.char_name, spell.spell_name FROM 
+	game_character JOIN char_spell ON game_character.id = char_spell.char_id JOIN spell ON char_spell.spell_id = spell.id WHERE
+	spell.id = 2;
+
+			OUTPUT: Error, mysql doesn't support MINUS
+
+			
+			
+			
+	
+	
+	15. nested queries: set membership - list parties with positive associations with organizations
+	
+		INPUT:
+		
+SELECT party.party_name, association.relation, organization.org_name FROM
+	party JOIN association ON party.id = association.party_id JOIN organization ON association.org_id = organization.id WHERE association.relation > (
+	SELECT relation FROM association);
+
+		OUTPUT:
+
+party_name	relation	org_name	
+Players	7	Riverton Guards	
+Players	1	Riverton Miners	
+Bandits	9	Westburrow Theives	
+Guards	10	Riverton Guards	
+
+	
+	
+	
+	
+	
+	16. nested queries: set comparison
+	
+		INPUT:
+	
+SELECT party.party_name, association.relation, organization.org_name FROM
+	party JOIN association ON party.id = association.party_id JOIN organization ON association.org_id = organization.id WHERE association.relation >some (
+	SELECT relation FROM association WHERE party.id = 1);
+	
+		OUTPUT:
+	
+party_name	relation	org_name	
+Players	-3	Westburrow Theives	
+Players	7	Riverton Guards	
+Players	1	Riverton Miners	
+
+	
+	
+	
+	
+	
+	17. testing for empty relation - list all characters who know spells
+	
+		INPUT:
+		
+SELECT game_character.char_name FROM game_character WHERE EXISTS(
+	SELECT * FROM char_spell WHERE game_character.id = char_spell.char_id);
+	
+		OUTPUT:
+		
+char_name	
+Besma	
+Kenneth	
+Gudris	
+Arnor	
+Sergei	
+Asfrid	
+Gunnlum	
+Hallfred	
+
+
+
+
+
+	
+
+	18. nested queries in the from clause - find the average armor class
+	
+		unable to use FROM () without errors
+
+
+
+
+	19 with clause
+	
+		not supported in MySQL, not sure how to implement it
+
+		
+		
+	
+	20. deletion of tuples
+	
+		INPUT:
+		
+DELETE FROM item WHERE item.char_id = 11 AND item.num = 3;
+	
+	
+	
+	
+	
+	
+	21. updating of tuples
+
+		INPUT:
+
+UPDATE association SET relation = -9
+	WHERE org_id = 2 AND party_id = 2;
+
+
+	
+	
+	22. List all unarmored characters
+	
+		INPUT:
+		
+SELECT game_character.char_name FROM game_character WHERE NOT EXISTS (
+	SELECT * FROM armor WHERE game_character.id = armor.char_id);
+	
+	OUTPUT:
+	
+char_name	
+Sergei	
+Asfrid	
+Kalf	
+
+
+
+	
+*****************************************
+* Original SQL Specificans from Phase 1 *
+*****************************************
+
+
+
+CREATE TABLE organization (
+id int 					NOT NULL, 
+name varchar(20) 			NOT NULL, 
+description varchar(60), 
+PRIMARY KEY(id)
+);
+
+CREATE TABLE location (
+organization_id int 			NOT NULL, 
+location varchar(20), 
+FOREIGN KEY(organization_id) REFERENCES organization(id),
+ON DELETE CASCADE
+);
+
+CREATE TABLE association (
+	org_id int				NOT NULL,
+	party_id int				NOT NULL,
+	relation int				NOT NULL,
+FOREIGN KEY(org_id) REFERENCES organization(id),
+FOREIGN KEY(party_id) REFERENCES party(id)
+);
+
+CREATE TABLE party (
+	id int					NOT NULL,
+	name varchar(20)			NOT NULL,
+	color char(6),
+	PRIMARTY KEY(id)
+);
+
+CREATE TABLE char_party (
+	char_id int				NOT NULL,
+	party_id int				NOT NULL,
+FOREIGN KEY(char_id) REFERENCES character(id),
+FOREIGN KEY(party_id) REFERENCES party(id)
+);
+
+CREATE TABLE character (
+	id int					NOT NULL,
+	name varchar(20)			NOT NULL,
+	description varchar(60),
+	PRIMARTY KEY(id)
+);
+
+CREATE TABLE char_spell (
+	char_id int				NOT NULL,
+	spell_id int				NOT NULL,
+FOREIGN KEY(char_id) REFERENCES character(id),
+FOREIGN KEY(spell_id) REFERENCES spell(id)
+);
+
+CREATE TABLE spell (
+	id int					NOT NULL,
+	name varchar(20)			NOT NULL,
+	description varchar(60),
+	PRIMARTY KEY(id)
+);
+
+CREATE TABLE item (
+	char_id int				NOT NULL,
+number int		 		NOT NULL,
+name varchar(20)			NOT NULL,
+weight int,
+description varchar(60),
+PRIMARY KEY(number),
+FOREIGN KEY(char_id) REFERENCES character(id),
+ON DELETE CASCADE
+);
+
+CREATE TABLE weapon (
+	char_id int				NOT NULL,
+	number int				NOT NULL,
+	type varchar(10)			NOT NULL,
+	damage int				NOT NULL,
+FOREIGN KEY(char_id) REFERENCES character(id),
+	FOREIGN KEY(number) REFERENCES item(number)
+);
+
+CREATE TABLE armor (
+	char_id int				NOT NULL,
+	number int				NOT NULL,
+	class int				NOT NULL,
+FOREIGN KEY(char_id) REFERENCES character(id),
+	FOREIGN KEY(number) REFERENCES item(number)
+);
+
+
+
+
+***********
+* Changes *
+***********
+
+	1. There are three instances of the word PRIMARY where somehow in my word document it was saved as PRIMARTY. Once the T's were removed the
+	script ran as expected however I am not sure how they got there in the first place.
+	
+	2. In the location, association, char_party, char_spell, weapon and armor tables, I thought that declaring the FOREIGN keys would be enough,
+	however I needed to create primary keys as well. While technically It worked, it wasn't initialized the way that I had wanted.
+	
+	3. I renamed the location key organization_id to org_id just to simplify it.
